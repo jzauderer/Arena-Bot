@@ -9,7 +9,7 @@ module.exports ={
 		let dm1 = await duelist1.createDM();
 		let dm2 = await duelist2.createDM();
 		let hpUpdate = [];
-		let tutorial = "Your duel begins!\nYou have 4 health and 3 options each turn: slash, lunge, and counter.\nSlash: Does 1 damage. If both slash, no damage is dealt to either duelist.\nLunge: Does 2 damage, can be countered.\nCounter: If the opponent lunges, does 3 damage. If they slash, you take 2 damage instead of the normal 1. If they counter, nothing happens.\nTo input a command, type either \"slash\", \"lunge\", or \"counter\". You have 1 minute to input a command, and will lose if you do not input in time. Good luck!";
+		let tutorial = "Your duel begins!\nYou have 4 health and 3 options each turn: slash, lunge, and counter.\nSlash: Does 1 damage. If both slash, no damage is dealt to either duelist. If the opponent lunges, slash does no damage.\nLunge: Does 2 damage, can be countered. If the opponent slashes, you avoid the damage.\nCounter: If the opponent lunges, does 3 damage and negates the lunge. If they slash, you take 2 damage instead of the normal 1. If they counter, nothing happens.\nTo input a command, type either \"slash\", \"lunge\", or \"counter\". You have 1 minute to input a command, and will lose if you do not input in time. Good luck!";
 		try{
 			await duelist1.send(tutorial);
 		}
@@ -24,7 +24,6 @@ module.exports ={
 			arena.send(duelist2.displayName + " could not receive the DM. Perhaps check your discord settings?");
 			return;
 		}
-		await duelist2.send(tutorial);
 		while(hp1 > 0 && hp2 > 0){
 			await duelist1.send("Input your move against " +duelist2.displayName+" now");
 			await duelist2.send("You must wait for your opponent to lock in a move, then you may lock in yours.");
@@ -89,24 +88,24 @@ async function tradeBlows(att1, att2, duelist1, duelist2, hp1, hp2, arena,duelis
 	att2 = att2.toLowerCase().trim();
 	//Both players slash
 	if(att1 === "slash" && att2 === "slash"){
-		report = duelist1 + " and " + duelist2 + " clash blades, but neither land a hit.\n";
+		report = duelist1 + " and " + duelist2 + " clash blades, but neither land a hit.";
 	}
 	//One slashes, the other lunges
 	else if(att1 === "lunge" && att2 === "slash"){
-		hp1 -= 1;
 		hp2 -= 2;
-		report = duelist1 + " slashes at " + duelist2+ ", who returns with a violent lunge.\n";
+		report = duelist2 + " slash at " + duelist1 +", but " + duelist1 + " slips past it and stabs "+ duelist2 + " with a lunge!";
+		//report = duelist2 + " slashes at " + duelist1+ ", who returns with a violent lunge.";
 	}
 	else if(att1 === "slash" && att2 === "lunge"){
 		hp1 -= 2;
-		hp2 -= 1;
-		report = duelist2 + " slashes at " + duelist1+ ", who returns with a violent lunge.\n";
+		report = duelist1 + " slash at " + duelist2 +", but " + duelist2 + " slips past it and stabs "+ duelist1 + " with a lunge!";
+		//report = duelist1 + " slashes at " + duelist2+ ", who returns with a violent lunge.";
 	}
 	//Both lunge
 	else if(att1 === "lunge" && att2 === "lunge"){
 		hp1 -= 2;
 		hp2 -= 2;
-		report = duelist1 + " and " + duelist2 + " both lunge at each other, landing gruesome stabs. The crowd goes wild!\n"
+		report = duelist1 + " and " + duelist2 + " both lunge at each other, landing gruesome stabs. The crowd goes wild!"
 	}
 	//Both counter
 	else if(att1 === "counter" && att2 === "counter"){
