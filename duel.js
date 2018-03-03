@@ -9,8 +9,21 @@ module.exports ={
 		let dm1 = await duelist1.createDM();
 		let dm2 = await duelist2.createDM();
 		let hpUpdate = [];
-		let tutorial = "Your duel begins!\nYou have 4 health and 3 options each turn: slash, lunge, and counter.\nSlash: Does 1 damage. If both slash, no damage is dealt to either duelist.\nLunge: Does 2 damage, can be countered.\nCounter: If the opponent lunges, does 3 damage. If they slash, you take 2 damage instead of the normal 1. If they counter, nothing happens.\nTo input a command, type either \"slash\", \"lunge\", or \"counter\". You have 30 seconds to input a command, and will lose if you do not input in time. Good luck!";
-		await duelist1.send(tutorial);
+		let tutorial = "Your duel begins!\nYou have 4 health and 3 options each turn: slash, lunge, and counter.\nSlash: Does 1 damage. If both slash, no damage is dealt to either duelist.\nLunge: Does 2 damage, can be countered.\nCounter: If the opponent lunges, does 3 damage. If they slash, you take 2 damage instead of the normal 1. If they counter, nothing happens.\nTo input a command, type either \"slash\", \"lunge\", or \"counter\". You have 1 minute to input a command, and will lose if you do not input in time. Good luck!";
+		try{
+			await duelist1.send(tutorial);
+		}
+		catch(err){
+			arena.send(duelist1.displayName + " could not receive the DM. Perhaps check your discord settings?");
+			return;
+		}
+		try{
+			await duelist2.send(tutorial);
+		}
+		catch(err){
+			arena.send(duelist2.displayName + " could not receive the DM. Perhaps check your discord settings?");
+			return;
+		}
 		await duelist2.send(tutorial);
 		while(hp1 > 0 && hp2 > 0){
 			await duelist1.send("Input your move against " +duelist2.displayName+" now");
@@ -29,24 +42,24 @@ module.exports ={
 			victoryMessage = "Both combatants have slain each other at the same time! The duel between " + duelist1.displayName + " and "+duelist2.displayName+" ends in a draw!";
 		}
 		else if(hp1<=0){
-			victoryMessage = duelist1.displayName + "has been struck down by "+duelist2.displayName+"! "+duelist2.displayName+" is victorious!";
+			victoryMessage = duelist2.displayName + " has struck down "+duelist1.displayName+"! "+duelist2.displayName+" is victorious!";
 		}
 		else{;
-			victoryMessage = duelist2.displayName + "has been struck down by "+duelist1.displayName+"! "+duelist1.displayName+" is victorious!";
+			victoryMessage = duelist1.displayName + " has struck down "+duelist2.displayName+"! "+duelist1.displayName+" is victorious!";
 		}
 		await duelist1.send(victoryMessage);
 		await duelist2.send(victoryMessage);
+		console.log(victoryMessage);
 		arena.send(victoryMessage);
 	}
 }
 
 async function getInput1(duelist1){
 	const filter = m => (m.content.toLowerCase().trim() === "slash" || m.content.toLowerCase().trim() === "counter" || m.content.toLowerCase().trim() === "lunge");
-	await duelist1.user.dmChannel.awaitMessages(filter, {max:1, time:30000})
+	await duelist1.user.dmChannel.awaitMessages(filter, {max:1, time:60000})
 		.then(collected => {
 			if(collected.size === 1){
 				move1 = collected.array().toString();
-				console.log("player1");
 			}
 			else{
 				move1 = "none";
@@ -57,11 +70,10 @@ async function getInput1(duelist1){
 
 async function getInput2(duelist2){
 	const filter = m => (m.content.toLowerCase().trim() === "slash" || m.content.toLowerCase().trim() === "counter" || m.content.toLowerCase().trim() === "lunge");
-	await duelist2.user.dmChannel.awaitMessages(filter, {max:1, time:30000})
+	await duelist2.user.dmChannel.awaitMessages(filter, {max:1, time:60000})
 	.then(collected => {
 			if(collected.size === 1){
 				move2 = collected.array().toString();
-				console.log("player2");
 			}
 			else{
 				move2 = "none";
@@ -73,19 +85,21 @@ async function getInput2(duelist2){
 async function tradeBlows(att1, att2, duelist1, duelist2, hp1, hp2, arena,duelistTag1,duelistTag2){
 	//Takes the duelists display names, not the duelists themselves
 	let report = "";
+	att1 = att1.toLowerCase().trim();
+	att2 = att2.toLowerCase().trim();
 	//Both players slash
 	if(att1 === "slash" && att2 === "slash"){
 		report = duelist1 + " and " + duelist2 + " clash blades, but neither land a hit.\n";
 	}
 	//One slashes, the other lunges
 	else if(att1 === "lunge" && att2 === "slash"){
-		hp1 -= 2;
-		hp2 -= 1;
+		hp1 -= 1;
+		hp2 -= 2;
 		report = duelist1 + " slashes at " + duelist2+ ", who returns with a violent lunge.\n";
 	}
 	else if(att1 === "slash" && att2 === "lunge"){
-		hp1 -= 1;
-		hp2 -= 2;
+		hp1 -= 2;
+		hp2 -= 1;
 		report = duelist2 + " slashes at " + duelist1+ ", who returns with a violent lunge.\n";
 	}
 	//Both lunge

@@ -27,11 +27,11 @@ client.on("message", function(message) {
   		}
 		message.channel.send(message.member.displayName + " has challenged " +challenged.displayName + " to combat! If you accept, say any message with the word \"accept\" in it! This offer will expire in 1 minute.");
 		//Wait for response from the challenged user
-		const filter = m => (m.member === challenged && m.content.includes("accept"));
+		const filter = m => (m.member === challenged && m.content.toLowerCase().includes("accept"));
 		message.channel.awaitMessages(filter, {max:1, time:60000})
 		.then(collected => {
 			if(collected.size > 0){
-				message.channel.send("The duel between "+message.member.displayName+" and "+challenged.displayName+" begins!");
+				message.channel.send("The duel between "+message.member.displayName+" and "+challenged.displayName+" begins! Both players check your DMs");
 				duelFunc.beginDuel(message.member, challenged, message.channel);
 				console.log("Duel started between "+ message.member.displayName +" and " +challenged.displayName+ " in "+ message.channel.name);
 				return;
