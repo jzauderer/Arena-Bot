@@ -9,7 +9,7 @@ client.on("ready", () => {
 
 client.on("message", function(message) {
 	//Duel command
-  	if (message.content.startsWith(")duel")){
+  	if (message.content.startsWith("!duel")){
 	  	//Check if anyone has been tagged
 	  	if(!message.mentions.members.size){
 	  		message.channel.send("You must tag a user to challenge them");
@@ -46,19 +46,49 @@ client.on("message", function(message) {
 	  	}
 	}
 	//blini command, post random image of blini
-	else if(message.content.startsWith("!blini")){
+	else if(message.content.toLowerCase().startsWith("!blini")){
+		//Creates an array of all the blini filenames
 		let blini = [];
-		console.log("registered");
 		let arrayOfBlinis = fs.readdirSync('./blinis');
 		arrayOfBlinis.forEach(function(file){
 			blini.push(file);
 		});
-		let result = Math.floor((Math.random()*blini.length));
-		try{
-			message.channel.send({file: `./blinis/${blini[result]}`});
+		//Posts a random blini
+		if(message.content.trim() === "!blini"){
+			let result = Math.floor((Math.random()*blini.length));
+			try{
+				message.channel.send({file: `./blinis/${blini[result]}`});
+			}
+			catch(err){
+				message.channel.send("Failed to post image. Perhaps this bot doesn't have image posting permissions?");
+			}
 		}
-		catch(err){
-			message.channel.send("Failed to post image. Perhaps this bot doesn't have image posting permissions?");
+		//If given a parameter, check if it's valid. If it's an integer, post the corresponding blini
+		else{
+			//Split message into an array of separate words, then check parameters
+			let splitMessage = message.content.toLowerCase().trim().split(" ");
+			//Check if only 1 arg
+			if(splitMessage.length === 2){
+				//Check if the second arg is a number
+				if(!isNaN(splitMessage[1])){
+					if(Math.floor(splitMessage[1]) > blini.length){
+						message.channel.send("There is no blini of that number. There are currently "+blini.length+" blinis.");
+						return;
+					}
+					try{
+						message.channel.send({file: `./blinis/${blini[Math.floor(splitMessage[1])-1]}`});
+					}
+					catch(err){
+						message.channel.send("Failed to post image. Perhaps this bot doesn't have image posting permissions?");
+					}
+				}
+				else{
+					message.channel.send(splitMessage[1] + " is not a number!");
+				}
+			}
+			else{
+				message.channel.send("Blini command takes can take no more than 1 argument.");
+			}
 		}
 	}
 });
