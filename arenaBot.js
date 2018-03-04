@@ -2,6 +2,7 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 const duelFunc = require("./duel");
 const fs = require('fs');
+const auth = require('./auth.json');
 
 client.on("ready", () => {
   console.log("Reactor Online, Sensors Online, Weapons Online, All Systems Nominal");
@@ -93,4 +94,4 @@ client.on("message", function(message) {
 	}
 });
 
-client.login("your token here");
+client.login(auth.token);
