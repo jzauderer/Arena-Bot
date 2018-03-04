@@ -10,6 +10,8 @@ module.exports ={
 		let dm2 = await duelist2.createDM();
 		let hpUpdate = [];
 		let tutorial = "Your duel begins!\nYou have 4 health and 3 options each turn: slash, lunge, and counter.\nSlash: Does 1 damage. If both slash, no damage is dealt to either duelist. If the opponent lunges, slash does no damage.\nLunge: Does 2 damage, can be countered. If the opponent slashes, you avoid the damage.\nCounter: If the opponent lunges, does 3 damage and negates the lunge. If they slash, you take 2 damage instead of the normal 1. If they counter, nothing happens.\nTo input a command, type either \"slash\", \"lunge\", or \"counter\". You have 1 minute to input a command, and will lose if you do not input in time. Good luck!";
+
+		//try/catches are used to make sure we can send DMs to both parties, in case one has DMs turned off for example
 		try{
 			await duelist1.send(tutorial);
 		}
@@ -24,18 +26,24 @@ module.exports ={
 			arena.send(duelist2.displayName + " could not receive the DM. Perhaps check your discord settings?");
 			return;
 		}
+
+		//Main combat loop, represents 1 "turn"
 		while(hp1 > 0 && hp2 > 0){
 			await duelist1.send("Input your move against " +duelist2.displayName+" now");
 			await duelist2.send("You must wait for your opponent to lock in a move, then you may lock in yours.");
-			//Get input from both players
+			//Get input from first player
 			let move1 = await getInput1(duelist1);
+			//After the first, get input from the second player
 			await duelist2.send("You may now input your move against " +duelist1.displayName+" now");
 			let move2 = await getInput2(duelist2);
-			//Deal out the damage from their moves
+			//Calculate the results of both moves
 			hpUpdate = await tradeBlows(move1,move2,duelist1.displayName,duelist2.displayName,hp1,hp2,arena,duelist1,duelist2);
+			//Update the hp values
 			hp1 = hpUpdate[0];
 			hp2 = hpUpdate[1];
 		}
+
+		//Construct the final victory message and post it
 		let victoryMessage = "";
 		if(hp1 <= 0 && hp2 <= 0){
 			victoryMessage = "Both combatants have slain each other at the same time! The duel between " + duelist1.displayName + " and "+duelist2.displayName+" ends in a draw!";
@@ -57,6 +65,7 @@ async function getInput1(duelist1){
 	const filter = m => (m.content.toLowerCase().trim() === "slash" || m.content.toLowerCase().trim() === "counter" || m.content.toLowerCase().trim() === "lunge");
 	await duelist1.user.dmChannel.awaitMessages(filter, {max:1, time:60000})
 		.then(collected => {
+			//If they send a valid move, use that. Otherwise, send the input "none"
 			if(collected.size === 1){
 				move1 = collected.array().toString();
 			}
@@ -71,6 +80,7 @@ async function getInput2(duelist2){
 	const filter = m => (m.content.toLowerCase().trim() === "slash" || m.content.toLowerCase().trim() === "counter" || m.content.toLowerCase().trim() === "lunge");
 	await duelist2.user.dmChannel.awaitMessages(filter, {max:1, time:60000})
 	.then(collected => {
+			//If they send a valid move, use that. Otherwise, send the input "none"
 			if(collected.size === 1){
 				move2 = collected.array().toString();
 			}
@@ -93,12 +103,12 @@ async function tradeBlows(att1, att2, duelist1, duelist2, hp1, hp2, arena,duelis
 	//One slashes, the other lunges
 	else if(att1 === "lunge" && att2 === "slash"){
 		hp2 -= 2;
-		report = duelist2 + " slash at " + duelist1 +", but " + duelist1 + " slips past it and stabs "+ duelist2 + " with a lunge!";
+		report = duelist2 + " slashes at " + duelist1 +", but " + duelist1 + " slips past it and stabs "+ duelist2 + " with a lunge!";
 		//report = duelist2 + " slashes at " + duelist1+ ", who returns with a violent lunge.";
 	}
 	else if(att1 === "slash" && att2 === "lunge"){
 		hp1 -= 2;
-		report = duelist1 + " slash at " + duelist2 +", but " + duelist2 + " slips past it and stabs "+ duelist1 + " with a lunge!";
+		report = duelist1 + " slashes at " + duelist2 +", but " + duelist2 + " slips past it and stabs "+ duelist1 + " with a lunge!";
 		//report = duelist1 + " slashes at " + duelist2+ ", who returns with a violent lunge.";
 	}
 	//Both lunge
