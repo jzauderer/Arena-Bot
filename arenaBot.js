@@ -7,11 +7,15 @@ const auth = require('./auth.json');
 
 client.on("ready", () => {
   console.log("Reactor Online, Sensors Online, Weapons Online, All Systems Nominal");
+  client.user.setActivity('!arenahelp');
 });
 
 client.on("message", function(message) {
+	if(message.content.trim().toLowerCase() === "!arenahelp"){
+		message.channel.send("Arena-Bot has 3 commands so far:\n**!duel [user]**: Challenges tagged user to a duel\n**!blini**: Posts a random blini\n**!cast [school] [spell name]**: Casts a spell based on the parameters. The school can only be one word, but the spell name may be many.")
+	}
 	//Duel command
-  	if (message.content.startsWith("!duel")){
+  	else if (message.content.startsWith("!duel")){
 	  	//Check if anyone has been tagged
 	  	if(!message.mentions.members.size){
 	  		message.channel.send("You must tag a user to challenge them");

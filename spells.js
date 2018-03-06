@@ -12,7 +12,6 @@ module.exports = {
 		schoolNum = (schoolNum - 1) % 9 + 1;
 		//Use the digital root to find the element of the spell
 		let element = getSchool(schoolNum);
-		let finalSpell = caster + ", remembering the teachings of the "+ splitMessage[1] + " school of magic, calls upon the power of " + element[1];
 		//Now we use their spell name to determine the type of spell in much the same way
 		let spellNum = 0;
 		let fullSpellName = "";
@@ -23,7 +22,7 @@ module.exports = {
 			spellNum += fullSpellName.charCodeAt(j);
 		}
 		spellNum = (spellNum - 1) % 9 + 1;
-		finalSpell += getSpell(spellNum, element[0]);
+		let finalSpell = caster + ", remembering the teachings of the "+ splitMessage[1] + " school of magic, calls upon the power of " + element[1] + getSpell(spellNum, element[0]);
 		castChannel.send(finalSpell);
 	}
 }
