@@ -82,7 +82,13 @@ client.on("message", function(message) {
 						return;
 					}
 					try{
-						message.channel.send({file: `./blinis/${blini[Math.floor(splitMessage[1])-1]}`});
+						if(fs.existsSync(`./blinis/blini${splitMessage[1]}.jpg`)){
+							message.channel.send({file: `./blinis/blini${splitMessage[1]}.jpg`});
+						}
+						else{
+							message.channel.send({file: `./blinis/blini${splitMessage[1]}.png`});
+						}
+						
 					}
 					catch(err){
 						message.channel.send("Failed to post image. Perhaps this bot doesn't have image posting permissions?");

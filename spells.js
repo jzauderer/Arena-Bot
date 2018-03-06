@@ -6,7 +6,7 @@ module.exports = {
 		//We will first find the sum of the ASCII values of all the characters in the school
 		let schoolNum = 0;
 		for(let i = 0; i < splitMessage[1].length; i++){
-			schoolNum += splitMessage[1].charCodeAt(i);
+			schoolNum += splitMessage[1].toLowerCase().charCodeAt(i);
 		}
 		//We will now calculate the digital root of this sum. This will be a number from 1 to 9, though it could be 0 if given 0
 		schoolNum = (schoolNum - 1) % 9 + 1;
@@ -17,12 +17,16 @@ module.exports = {
 		let fullSpellName = "";
 		for(let i = 2; i < splitMessage.length; i++){
 			fullSpellName += splitMessage[i];
+			fullSpellName += " ";
 		}
+		fullSpellName = fullSpellName.trim();
 		for(let j = 0; j < fullSpellName.length; j++){
-			spellNum += fullSpellName.charCodeAt(j);
+			if(fullSpellName.charAt(j) != " "){
+				spellNum += fullSpellName.toLowerCase().charCodeAt(j);
+			}
 		}
 		spellNum = (spellNum - 1) % 9 + 1;
-		let finalSpell = caster + ", remembering the teachings of the "+ splitMessage[1] + " school of magic, calls upon the power of " + element[1] + getSpell(spellNum, element[0]);
+		let finalSpell = caster + ", remembering the teachings of the "+ splitMessage[1] + " school of magic, calls upon the power of " + element[1] + ", casting "+ fullSpellName + getSpell(spellNum, element[0]);
 		castChannel.send(finalSpell);
 	}
 }
