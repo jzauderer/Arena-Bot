@@ -1,6 +1,7 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
 const duelFunc = require("./duel");
+const spellFunc = require("./spells");
 const fs = require('fs');
 const auth = require('./auth.json');
 
@@ -55,7 +56,7 @@ client.on("message", function(message) {
 			blini.push(file);
 		});
 		//Posts a random blini
-		if(message.content.trim() === "!blini"){
+		if(message.content.trim().toLowerCase() === "!blini"){
 			let result = Math.floor((Math.random()*blini.length));
 			try{
 				message.channel.send({file: `./blinis/${blini[result]}`});
@@ -72,7 +73,7 @@ client.on("message", function(message) {
 			if(splitMessage.length === 2){
 				//Check if the second arg is a number
 				if(!isNaN(splitMessage[1])){
-					if(Math.floor(splitMessage[1]) > blini.length){
+					if((Math.floor(splitMessage[1]) > blini.length) || (Math.floor(splitMessage[1]) <= 0)){
 						message.channel.send("There is no blini of that number. There are currently "+blini.length+" blinis.");
 						return;
 					}
@@ -91,6 +92,20 @@ client.on("message", function(message) {
 				message.channel.send("Blini command takes can take no more than 1 argument.");
 			}
 		}
+	}
+	//Casts command, casts a spell. Takes no less than 2 parameters
+	else if(message.content.toLowerCase().startsWith("!cast")){
+		//Split message into an array of separate words, then check parameters
+		let splitMessage = message.content.trim().split(" ");
+		//Remove whitespace elements
+		splitMessage = splitMessage.filter(function(str){
+			return /\S/.test(str);
+		})
+		if(splitMessage.length <= 2){
+			message.channel.send("This command requires at least 2 parameters: The school of magic, followed by the name of the spell.\nThe school must be one word, but the name can be many.");
+			return;
+		}
+		spellFunc.cast(splitMessage, message.channel, message.member.displayName);
 	}
 });
 
