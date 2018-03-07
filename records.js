@@ -15,7 +15,6 @@ module.exports = {
 		catch(err){
 			winnerExists = false;
 		}
-		console.log(winnerExists);
 		try{
 			loserRecord = await getRecord(loser);
 			loserExists = true;
@@ -23,7 +22,6 @@ module.exports = {
 		catch(err){
 			loserExists = false;
 		}
-		console.log(loserExists);
 		//Create records if they don't have them already
 		if(!winnerExists){
 			await createRecord(winner);
@@ -32,7 +30,7 @@ module.exports = {
 		if(!loserExists){
 			await createRecord(loser);
 			loserRecord = await getRecord(loser);
-		}
+		};
 		//Check if the two have an existing record. If not, make it
 		if(winnerRecord[loser] !== undefined){
 			await updateRecords(winner, loser);
@@ -55,45 +53,45 @@ module.exports = {
 async function addRecord(winner, loser){
 	let winnerRecord = await getRecord(winner);
 	let loserRecord = await getRecord(loser);
-	winnerRecord[loser.username] = '1-0';
-	loserRecord[winner.username] = '0-1';
-	fs.writeFile('./recordFile.json', JSON.stringify(winnerRecord));
-	fs.writeFile('./recordFile.json', JSON.stringify(loserRecord));
+	console.log("Winner Record" + winnerRecord);
+	winnerRecord[loser.user.username] = '1-0';
+	loserRecord[winner.user.username] = '0-1';
+	await fs.writeFile('./recordFile.json', JSON.stringify(winnerRecord));
+	await fs.writeFile('./recordFile.json', JSON.stringify(loserRecord));
 }
 
 //Get the record of a given duelist
 async function getRecord(duelist){
 	var allRecords;
-	fs.readFile('./recordFile.json', 'utf8', function (err, data){
+	await fs.readFile('./recordFile.json', 'utf8', function (err, data){
 		if(err) throw err;
 		allRecords = JSON.parse(data);
+		console.log(allRecords);
+		//Check if the given duelist already has a record. If so, return it
+		if(allRecords[duelist.user.username] !== undefined){
+			return allRecords[duelist.user.username];
+		}
+		else{
+			throw "Record Not Found";
+		}
 	});
-	//Check if the given duelist already has a record. If so, return it
-	if(allRecords[duelist.username][tag] !== undefined){
-		return allRecords[duelist.username];
-	}
-	else{
-		throw "Record Not Found";
-	}
 }
 
 //Create a new duelist record
 async function createRecord(duelist){
-	let newRecord ={
-		"tag": duelist.username
-	};
-	fs.writeFile('./recordFile.json', JSON.stringify(newRecord));
+	await fs.writeFile('./recordFile.json', JSON.stringify({"tag": duelist.user.username}));
 }
 
+//Update existing record
 async function updateRecords(winner, loser){
 	let winnerRecord = getRecord(winner.username);
 	let loserRecord = getRecord(loser.username);
-	let winRecOnLoser = winnerRecord[loser.username].split('-');
-	let loserRecOnWinner = loserRecord[winner.username].split('-');
+	let winRecOnLoser = winnerRecord[loser.user.username].split('-');
+	let loserRecOnWinner = loserRecord[winner.user.username].split('-');
 	winRecOnLoser[0] = parseInt(winRecOnLoser[0], 10) + 1;
 	loserRecOnWinner[1] = parseInt(loserRecOnWinner[1], 10) + 1;
 	winnerRecord[loser] = winRecOnLoser[0] + '-' + winRecOnLoser[1];
 	loserRecord[winner] = loserRecOnWinner[0] + '-' + loserRecOnWinner[1];
-	fs.writeFile('./recordFile.json', JSON.stringify(winnerRecord));
-	fs.writeFile('./recordFile.json', JSON.stringify(loserRecord));
+	await fs.writeFile('./recordFile.json', JSON.stringify(winnerRecord));
+	await fs.writeFile('./recordFile.json', JSON.stringify(loserRecord));
 }

@@ -12,9 +12,11 @@ client.on("ready", () => {
 });
 
 client.on("message", function(message) {
+	//Help message
 	if(message.content.trim().toLowerCase() === "!arenahelp"){
 		message.channel.send("Arena-Bot has 3 commands so far:\n**!duel [user]**: Challenges tagged user to a duel\n**!blini [optional number]**: Posts a random blini. If given a number, will print the corresponding blini.\n**!cast [school] [spell name]**: Casts a spell based on the parameters. The school can only be one word, but the spell name may be many.")
 	}
+
 	//Duel command
   	else if (message.content.startsWith("!duel")){
 	  	//Check if anyone has been tagged
@@ -52,12 +54,12 @@ client.on("message", function(message) {
 			.catch("The duel was rejected.")
 	  	}
 	}
+/*
 	//Print user record
-	/*
 	else if(message.content.trim().toLowerCase() === "!record"){
-		record.printRecord(message.user, message.channel);
+		record.printRecord(message.member, message.channel);
 	}
-	*/
+*/
 	//blini command, post random image of blini
 	else if(message.content.toLowerCase().startsWith("!blini")){
 		//Creates an array of all the blini filenames
@@ -110,6 +112,7 @@ client.on("message", function(message) {
 			}
 		}
 	}
+
 	//Casts command, casts a spell. Takes no less than 2 parameters
 	else if(message.content.toLowerCase().startsWith("!cast")){
 		//Split message into an array of separate words, then check parameters
