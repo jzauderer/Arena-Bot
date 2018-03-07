@@ -14,11 +14,13 @@ module.exports = {
 		let element = getSchool(schoolNum);
 		//Now we use their spell name to determine the type of spell in much the same way
 		let spellNum = 0;
+		//First we put together the name of the spell so we can add it to the message
 		let fullSpellName = "";
 		for(let i = 2; i < splitMessage.length; i++){
 			fullSpellName += splitMessage[i];
 			fullSpellName += " ";
 		}
+		//Then we take the ASCII values and digital root of their sum, just like before
 		fullSpellName = fullSpellName.trim();
 		for(let j = 0; j < fullSpellName.length; j++){
 			if(fullSpellName.charAt(j) != " "){
@@ -34,6 +36,7 @@ module.exports = {
 function getSpell(digitalRoot, element){
 	switch(digitalRoot){
 		case 0:
+			//This case will never be reached, as the digital root will only ever be 1-9
 			spell = " to create a giant fist made of " + element + " to crush their foes!";
 			break;
 		case 1:
@@ -70,6 +73,7 @@ function getSpell(digitalRoot, element){
 function getSchool (digitalRoot){
 	switch(digitalRoot){
 		case 0:
+			//This case will never be reached, as the digital root will only ever be 1-9
 			element = "Void Energy";
 		 	magicSource = "the Forbidden Entity of the Void";
 			break;

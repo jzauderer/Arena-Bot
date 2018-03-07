@@ -1,15 +1,16 @@
 const Discord = require("discord.js");
+const record = require("./records");
 
 module.exports ={
 	beginDuel: async function (duelist1, duelist2, arena){
-		let hp1 = 4;
-		let hp2 = 4;
+		let hp1 = 5;
+		let hp2 = 5;
 		let move1 = "";
 		let move2 = "";
 		let dm1 = await duelist1.createDM();
 		let dm2 = await duelist2.createDM();
 		let hpUpdate = [];
-		let tutorial = "Your duel begins!\nYou have 4 health and 3 options each turn: slash, lunge, and counter.\nSlash: Does 1 damage. If both slash, no damage is dealt to either duelist. If the opponent lunges, slash does no damage.\nLunge: Does 2 damage, can be countered. If the opponent slashes, you avoid the damage.\nCounter: If the opponent lunges, does 3 damage and negates the lunge. If they slash, you take 2 damage instead of the normal 1. If they counter, nothing happens.\nTo input a command, type either \"slash\", \"lunge\", or \"counter\". You have 1 minute to input a command, and will lose if you do not input in time. Good luck!";
+		let tutorial = "Your duel begins!\nYou have 5 health and 3 options each turn: slash, lunge, and counter.\nSlash: Does 2 damage. If both slash, no damage is dealt to either duelist. If the opponent lunges, slash does no damage.\nLunge: Does 2 damage, can be countered. If the opponent slashes, you avoid the damage.\nCounter: If the opponent lunges, does 3 damage and negates the lunge. If they slash, you take 2 damage. If they counter, nothing happens.\nTo input a command, type either \"slash\", \"lunge\", or \"counter\". You have 1 minute to input a command, and will lose if you do not input in time. Good luck!";
 
 		//try/catches are used to make sure we can send DMs to both parties, in case one has DMs turned off for example
 		try{
@@ -50,9 +51,11 @@ module.exports ={
 		}
 		else if(hp1<=0){
 			victoryMessage = duelist2.displayName + " has struck down "+duelist1.displayName+"! "+duelist2.displayName+" is victorious!";
+			record.setRecord(duelist2, duelist1);
 		}
-		else{;
+		else{
 			victoryMessage = duelist1.displayName + " has struck down "+duelist2.displayName+"! "+duelist1.displayName+" is victorious!";
+			record.setRecord(duelist1, duelist2);
 		}
 		await duelist1.send(victoryMessage);
 		await duelist2.send(victoryMessage);
@@ -92,7 +95,7 @@ async function getInput2(duelist2){
 }
 
 async function tradeBlows(att1, att2, duelist1, duelist2, hp1, hp2, arena,duelistTag1,duelistTag2){
-	//Takes the duelists display names, not the duelists themselves
+	//Takes the duelist's display names, not the duelists themselves
 	let report = "";
 	att1 = att1.toLowerCase().trim();
 	att2 = att2.toLowerCase().trim();

@@ -2,6 +2,7 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 const duelFunc = require("./duel");
 const spellFunc = require("./spells");
+const record = require("./records");
 const fs = require('fs');
 const auth = require('./auth.json');
 
@@ -12,7 +13,7 @@ client.on("ready", () => {
 
 client.on("message", function(message) {
 	if(message.content.trim().toLowerCase() === "!arenahelp"){
-		message.channel.send("Arena-Bot has 3 commands so far:\n**!duel [user]**: Challenges tagged user to a duel\n**!blini**: Posts a random blini\n**!cast [school] [spell name]**: Casts a spell based on the parameters. The school can only be one word, but the spell name may be many.")
+		message.channel.send("Arena-Bot has 3 commands so far:\n**!duel [user]**: Challenges tagged user to a duel\n**!blini [optional number]**: Posts a random blini. If given a number, will print the corresponding blini.\n**!cast [school] [spell name]**: Casts a spell based on the parameters. The school can only be one word, but the spell name may be many.")
 	}
 	//Duel command
   	else if (message.content.startsWith("!duel")){
@@ -51,6 +52,12 @@ client.on("message", function(message) {
 			.catch("The duel was rejected.")
 	  	}
 	}
+	//Print user record
+	/*
+	else if(message.content.trim().toLowerCase() === "!record"){
+		record.printRecord(message.user, message.channel);
+	}
+	*/
 	//blini command, post random image of blini
 	else if(message.content.toLowerCase().startsWith("!blini")){
 		//Creates an array of all the blini filenames
@@ -77,7 +84,7 @@ client.on("message", function(message) {
 			if(splitMessage.length === 2){
 				//Check if the second arg is a number
 				if(!isNaN(splitMessage[1])){
-					if((Math.floor(splitMessage[1]) > blini.length) || (Math.floor(splitMessage[1]) <= 0)){
+					if((Math.floor(splitMessage[1]) > blini.length-1) || (Math.floor(splitMessage[1]) <= 0)){
 						message.channel.send("There is no blini of that number. There are currently "+blini.length+" blinis.");
 						return;
 					}
@@ -95,7 +102,7 @@ client.on("message", function(message) {
 					}
 				}
 				else{
-					message.channel.send(splitMessage[1] + " is not a number!");
+					message.channel.send("That's not a number!");
 				}
 			}
 			else{
