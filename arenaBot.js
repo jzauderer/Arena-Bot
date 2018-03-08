@@ -55,12 +55,11 @@ client.on("message", function(message) {
 	  	}
 	}
 
-/*
 	//Print user record
 	else if(message.content.trim().toLowerCase() === "!record"){
 		record.printRecord(message.member, message.channel);
 	}
-*/
+
 	//blini command, post random image of blini
 	else if(message.content.toLowerCase().startsWith("!blini")){
 		//Creates an array of all the blini filenames
