@@ -51,11 +51,11 @@ module.exports ={
 		}
 		else if(hp1<=0){
 			victoryMessage = duelist2.displayName + " has struck down "+duelist1.displayName+"! "+duelist2.displayName+" is victorious!";
-			record.setRecord(duelist2, duelist1);
+			//record.setRecord(duelist2.user.username, duelist1.user.username);
 		}
 		else{
 			victoryMessage = duelist1.displayName + " has struck down "+duelist2.displayName+"! "+duelist1.displayName+" is victorious!";
-			record.setRecord(duelist1, duelist2);
+			//record.setRecord(duelist1.user.username, duelist2.user.username);
 		}
 		await duelist1.send(victoryMessage);
 		await duelist2.send(victoryMessage);

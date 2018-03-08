@@ -54,6 +54,7 @@ client.on("message", function(message) {
 			.catch("The duel was rejected.")
 	  	}
 	}
+
 /*
 	//Print user record
 	else if(message.content.trim().toLowerCase() === "!record"){
