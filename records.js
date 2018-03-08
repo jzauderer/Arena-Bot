@@ -11,9 +11,7 @@ module.exports = {
 			if(records.hasOwnProperty(winner)){
 				//If they have a record, increment wins by 1
 				wl = records[winner].split('-')
-				console.log(wl);
-				wl[0] += 1;
-				records[winner] = wl[0]+'-'+wl[1];
+				records[winner] = (parseInt(wl[0])+parseInt(1))+'-'+wl[1];
 			}
 			else{
 				//Otherwise, give them a default value of 1-0 for winning
@@ -22,14 +20,15 @@ module.exports = {
 			if(records.hasOwnProperty(loser)){
 				//Same as above. If they're in, increment losses by 1
 				wl = records[loser].split('-');
-				wl[1] += 1;
-				records[loser] = wl[0]+'-'+wl[1];
+				records[loser] = wl[0]+'-'+(parseInt(wl[1])+parseInt(1));
 			}
 			else{
 				records[loser] = "0-1";
 			}
 			//Overwrite the old record with the new one
-			fs.writeFile('./recordFile.json', JSON.stringify(records));
+			fs.writeFile('./recordFile.json', JSON.stringify(records), (error)=>{
+				
+			});
 		});
 	},
 
