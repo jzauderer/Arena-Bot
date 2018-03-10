@@ -86,21 +86,45 @@ client.on("message", function(message) {
 			if(splitMessage.length === 2){
 				//Check if the second arg is a number
 				if(!isNaN(splitMessage[1])){
-					if((Math.floor(splitMessage[1]) > blini.length-1) || (Math.floor(splitMessage[1]) <= 0)){
+					if((Math.floor(splitMessage[1]) > blini.length) || (Math.floor(splitMessage[1]) <= -2)){
 						message.channel.send("There is no blini of that number. There are currently "+blini.length+" blinis.");
 						return;
 					}
-					try{
-						if(fs.existsSync(`./blinis/blini${splitMessage[1]}.jpg`)){
-							message.channel.send({file: `./blinis/blini${splitMessage[1]}.jpg`});
+					if(Math.floor(splitMessage[1]) === -1){
+						try{
+							message.channel.send({file: `./misc_images/bliniGlitch.gif`});
 						}
-						else{
-							message.channel.send({file: `./blinis/blini${splitMessage[1]}.png`});
+						catch(err){
+							message.channel.send("Failed to post image. Perhaps this bot doesn't have image posting permissions?");
 						}
-						
 					}
-					catch(err){
-						message.channel.send("Failed to post image. Perhaps this bot doesn't have image posting permissions?");
+					else if(Math.floor(splitMessage[1]) === 0){
+						let result = Math.floor(Math.random()*2);
+						try{
+							if(result === 1){
+								message.channel.send({file: `./misc_images/bliniDream1.jpg`});
+							}
+							else{
+								message.channel.send({file: `./misc_images/bliniDream2.jpg`});
+							}
+						}
+						catch(err){
+							message.channel.send("Failed to post image. Perhaps this bot doesn't have image posting permissions?");
+						}
+					}
+					else{
+						try{
+							if(fs.existsSync(`./blinis/blini${splitMessage[1]}.jpg`)){
+								message.channel.send({file: `./blinis/blini${splitMessage[1]}.jpg`});
+							}
+							else{
+								message.channel.send({file: `./blinis/blini${splitMessage[1]}.png`});
+							}
+							
+						}
+						catch(err){
+							message.channel.send("Failed to post image. Perhaps this bot doesn't have image posting permissions?");
+						}
 					}
 				}
 				else{
