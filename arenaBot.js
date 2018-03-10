@@ -14,7 +14,7 @@ client.on("ready", () => {
 client.on("message", function(message) {
 	//Help message
 	if(message.content.trim().toLowerCase() === "!arenahelp"){
-		message.channel.send("Arena-Bot has 3 commands so far:\n**!duel [user]**: Challenges tagged user to a duel\n**!blini [optional number]**: Posts a random blini. If given a number, will print the corresponding blini.\n**!cast [school] [spell name]**: Casts a spell based on the parameters. The school can only be one word, but the spell name may be many.")
+		message.channel.send("Arena-Bot has 3 commands so far:\n**!duel [user]**: Challenges tagged user to a duel\n**!record**: Posts your win/loss record in the duel minigame\n**!blini [optional number]**: Posts a random blini. If given a number, will print the corresponding blini.\n**!blinivideo**: Posts a random blini video\n**!cast [school] [spell name]**: Casts a spell based on the parameters. The school can only be one word, but the spell name may be many.")
 	}
 
 	//Duel command
@@ -61,7 +61,7 @@ client.on("message", function(message) {
 	}
 
 	//blini command, post random image of blini
-	else if(message.content.toLowerCase().startsWith("!blini")){
+	else if(message.content.toLowerCase().trim().split(" ")[0] === "!blini"){
 		//Creates an array of all the blini filenames
 		let blini = [];
 		let arrayOfBlinis = fs.readdirSync('./blinis');
@@ -86,10 +86,12 @@ client.on("message", function(message) {
 			if(splitMessage.length === 2){
 				//Check if the second arg is a number
 				if(!isNaN(splitMessage[1])){
+					//Check if the number is valid
 					if((Math.floor(splitMessage[1]) > blini.length) || (Math.floor(splitMessage[1]) <= -2)){
 						message.channel.send("There is no blini of that number. There are currently "+blini.length+" blinis.");
 						return;
 					}
+					//If the number is -1, post bliniGlitch
 					if(Math.floor(splitMessage[1]) === -1){
 						try{
 							message.channel.send({file: `./misc_images/bliniGlitch.gif`});
@@ -98,6 +100,7 @@ client.on("message", function(message) {
 							message.channel.send("Failed to post image. Perhaps this bot doesn't have image posting permissions?");
 						}
 					}
+					//If the number is 0, choose between two special "dream" blinis
 					else if(Math.floor(splitMessage[1]) === 0){
 						let result = Math.floor(Math.random()*2);
 						try{
@@ -112,6 +115,7 @@ client.on("message", function(message) {
 							message.channel.send("Failed to post image. Perhaps this bot doesn't have image posting permissions?");
 						}
 					}
+					//Otherwise just post the requested blini
 					else{
 						try{
 							if(fs.existsSync(`./blinis/blini${splitMessage[1]}.jpg`)){
@@ -135,6 +139,16 @@ client.on("message", function(message) {
 				message.channel.send("Blini command takes can take no more than 1 argument.");
 			}
 		}
+	}
+
+	//Blini video command
+	else if(message.content.trim().toLowerCase() === "!blinivideo"){
+		//Read from the text file of video links
+		let bliniVideos = fs.readFileSync('./bliniVideos.txt', "utf-8");
+		//Split it into an array of each video, then post a random one
+		bliniVideos = bliniVideos.split('\n');
+		//Send a random video from the array
+		message.channel.send(bliniVideos[Math.floor(Math.random()*bliniVideos.length)]);
 	}
 
 	//Casts command, casts a spell. Takes no less than 2 parameters
