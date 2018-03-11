@@ -14,7 +14,7 @@ client.on("ready", () => {
 client.on("message", function(message) {
 	//Help message
 	if(message.content.trim().toLowerCase() === "!arenahelp"){
-		message.channel.send("Arena-Bot has 3 commands so far:\n**!duel [user]**: Challenges tagged user to a duel\n**!record**: Posts your win/loss record in the duel minigame\n**!blini [optional number]**: Posts a random blini. If given a number, will print the corresponding blini.\n**!blinivideo**: Posts a random blini video\n**!cast [school] [spell name]**: Casts a spell based on the parameters. The school can only be one word, but the spell name may be many.")
+		message.channel.send("Arena-Bot has 4 commands so far:\n**!duel [user]**: Challenges tagged user to a duel\n**!record**: Posts your win/loss record in the duel minigame\n**!blini [optional number]**: Posts a random blini. If given a number, will print the corresponding blini.\n**!blinivideo**: Posts a random blini video")
 	}
 
 	//Duel command
@@ -153,6 +153,8 @@ client.on("message", function(message) {
 
 	//Casts command, casts a spell. Takes no less than 2 parameters
 	else if(message.content.toLowerCase().startsWith("!cast")){
+		message.channel.send("This command currently under construction!");
+		/*
 		//Split message into an array of separate words, then check parameters
 		let splitMessage = message.content.trim().split(" ");
 		//Remove whitespace elements
@@ -164,6 +166,7 @@ client.on("message", function(message) {
 			return;
 		}
 		spellFunc.cast(splitMessage, message.channel, message.member.displayName);
+		*/
 	}
 });
 

@@ -1,82 +1,66 @@
 const Discord = require("discord.js");
 
 module.exports = {
-	cast: function (splitMessage, castChannel, caster){
-		//The first parameter is the school of magic. This will be used to determine the element of the spell
-		//We will first find the sum of the ASCII values of all the characters in the school
-		let schoolNum = 0;
-		for(let i = 0; i < splitMessage[1].length; i++){
-			schoolNum += splitMessage[1].toLowerCase().charCodeAt(i);
-		}
-		//We will now calculate the digital root of this sum. This will be a number from 1 to 9, though it could be 0 if given 0
-		schoolNum = (schoolNum - 1) % 9 + 1;
-		//Use the digital root to find the element of the spell
-		let element = getSchool(schoolNum);
-		//Now we use their spell name to determine the type of spell in much the same way
-		let spellNum = 0;
-		//First we put together the name of the spell so we can add it to the message
-		let fullSpellName = "";
-		for(let i = 2; i < splitMessage.length; i++){
-			fullSpellName += splitMessage[i];
-			fullSpellName += " ";
-		}
-		//Then we take the ASCII values and digital root of their sum, just like before
-		fullSpellName = fullSpellName.trim();
-		for(let j = 0; j < fullSpellName.length; j++){
-			if(fullSpellName.charAt(j) != " "){
-				spellNum += fullSpellName.toLowerCase().charCodeAt(j);
-			}
-		}
-		spellNum = (spellNum - 1) % 9 + 1;
-		let finalSpell = caster + ", remembering the teachings of the "+ splitMessage[1] + " school of magic, calls upon the power of " + element[1] + ", casting "+ fullSpellName + getSpell(spellNum, element[0]);
-		castChannel.send(finalSpell);
+	wizardDuel: async function(wizard1, wizard2, arena){
+		
 	}
 }
 
-function getSpell(digitalRoot, element){
-	switch(digitalRoot){
+function cast(splitMessage, castChannel, caster){
+	//The first parameter is the school of magic. This will be used to determine the element of the spell
+	//We will first find the sum of the ASCII values of all the characters in the school
+	let schoolNum = 0;
+	for(let i = 0; i < splitMessage[1].length; i++){
+		schoolNum += splitMessage[1].toLowerCase().charCodeAt(i);
+	}
+	//We will now calculate the digital root of this sum. This will be a number from 1 to 9, though it could be 0 if given 0
+	schoolNum = (schoolNum - 1) % 9 + 1;
+	//Use the digital root to find the element of the spell
+	let element = getSchool(schoolNum);
+	//Now we use their spell name to determine the type of spell in much the same way, with a slightly different algorithm
+	let spellNum = 0;
+	//First we put together the name of the spell so we can add it to the message
+	let fullSpellName = "";
+	for(let i = 2; i < splitMessage.length; i++){
+		fullSpellName += splitMessage[i];
+		fullSpellName += " ";
+	}
+	//Then we take the sum of the ASCII values
+	fullSpellName = fullSpellName.trim();
+	for(let j = 0; j < fullSpellName.length; j++){
+		if(fullSpellName.charAt(j) != " "){
+			spellNum += fullSpellName.toLowerCase().charCodeAt(j);
+		}
+	}
+	//We will now calculate that sum modulo 5. This will be a number from 0 to 4
+	spellNum = spellNum % 5;
+	let finalSpell = caster + "draws on their knowledge of the "+ splitMessage[1] + " school of magic, calling upon the power of " + element[1] + ", casting "+ fullSpellName + getSpell(spellNum, element[0]);
+	castChannel.send(finalSpell);
+}
+
+function getSpell(num, element){
+	switch(num){
 		case 0:
-			//This case will never be reached, as the digital root will only ever be 1-9
-			spell = " to create a giant fist made of " + element + " to crush their foes!";
-			break;
-		case 1:
 			spell = " to construct a terrifying creature made of " + element + "!";
 			break;
-		case 2:
+		case 1:
 			spell = ", surrounding their fists in " + element + ". Looks like they're more of a puncher than a caster.";
 			break;
-		case 3:
+		case 2:
 			spell = ", creating long tentacles of " + element + " to lash out at foes!";
 		 	break;
-		 case 4:
-		 	spell = " to create several orbs of " + element + " swirling around their head, ready to fly out at any nearby enemies.";
-		 	break;
-		 case 5:
-		 	spell = ", forming a spear of " + element + ", ready for either lunging or tossing.";
-		 	break;
-		 case 6:
-		 	spell = ", forming a suit of dense armor made of " + element + " around them.";
-		 	break;
-		 case 7:
-		 	spell = ", shapeshifting into a powerful " + element + " elemental!";
-		 	break;
-		 case 8:
-		 	spell = "! Right beside them, a clone made of " + element + " appears!";
-		 	break;
-		 case 9:
-		 	spell = ", covering the land around them with mines which, when triggered, will erupt in an explosion of deadly " + element + "!";
-		 	break;
+		case 3:
+			spell = " to create a giant fist made of " + element + " to crush their foes!";
+			break;
+		case 4:
+			spell = ", forming a spear of " + element + ", ready for either lunging or tossing.";
+			break;
 	}
 	return spell;
 }
 
 function getSchool (digitalRoot){
 	switch(digitalRoot){
-		case 0:
-			//This case will never be reached, as the digital root will only ever be 1-9
-			element = "Void Energy";
-		 	magicSource = "the Forbidden Entity of the Void";
-			break;
 		case 1:
 			element = "Flame";
 		 	magicSource = "the Spirits of Flame";
@@ -106,8 +90,8 @@ function getSchool (digitalRoot){
 		 	magicSource = "the Undines of the sea";
 		 	break;
 		 case 8:
-		 	element = "Wood";
-		 	magicSource = "the Forest Nymphs";
+		 	element = "Light";
+		 	magicSource = "the Divine Spirits";
 		 	break;
 		 case 9:
 		 	element = "Cosmic Energy";
