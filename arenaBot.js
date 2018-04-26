@@ -11,6 +11,8 @@ client.on("ready", () => {
   client.user.setActivity('!arenahelp');
 });
 
+client.on('error', () => console.log("Errored"));
+
 client.on("message", function(message) {
 	//Help message
 	if(message.content.trim().toLowerCase() === "!arenahelp"){
@@ -58,6 +60,11 @@ client.on("message", function(message) {
 	//Print user record
 	else if(message.content.trim().toLowerCase() === "!record"){
 		record.printRecord(message.member, message.channel);
+	}
+
+	//Print duel Power Rankings for the given server
+	else if(message.content.trim().toLowerCase() === "!pr"){
+		record.printPR(message.channel, message.channel.guild);
 	}
 
 	//blini command, post random image of blini

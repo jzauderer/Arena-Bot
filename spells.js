@@ -2,7 +2,7 @@ const Discord = require("discord.js");
 
 module.exports = {
 	wizardDuel: async function(wizard1, wizard2, arena){
-		
+
 	}
 }
 
@@ -34,7 +34,7 @@ function cast(splitMessage, castChannel, caster){
 	}
 	//We will now calculate that sum modulo 5. This will be a number from 0 to 4
 	spellNum = spellNum % 5;
-	let finalSpell = caster + "draws on their knowledge of the "+ splitMessage[1] + " school of magic, calling upon the power of " + element[1] + ", casting "+ fullSpellName + getSpell(spellNum, element[0]);
+	let finalSpell = caster + " draws on their knowledge of the "+ splitMessage[1] + " magic style, calling upon the power of " + element[1] + " to casy "+ fullSpellName + getSpell(spellNum, element[0]);
 	castChannel.send(finalSpell);
 }
 

@@ -107,12 +107,10 @@ async function tradeBlows(att1, att2, duelist1, duelist2, hp1, hp2, arena,duelis
 	else if(att1 === "lunge" && att2 === "slash"){
 		hp2 -= 2;
 		report = duelist2 + " slashes at " + duelist1 +", but " + duelist1 + " slips past it and stabs "+ duelist2 + " with a lunge!";
-		//report = duelist2 + " slashes at " + duelist1+ ", who returns with a violent lunge.";
 	}
 	else if(att1 === "slash" && att2 === "lunge"){
 		hp1 -= 2;
 		report = duelist1 + " slashes at " + duelist2 +", but " + duelist2 + " slips past it and stabs "+ duelist1 + " with a lunge!";
-		//report = duelist1 + " slashes at " + duelist2+ ", who returns with a violent lunge.";
 	}
 	//Both lunge
 	else if(att1 === "lunge" && att2 === "lunge"){
