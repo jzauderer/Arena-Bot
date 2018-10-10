@@ -11,7 +11,7 @@ client.on("ready", () => {
   client.user.setActivity('!arenahelp');
 });
 
-client.on('error', () => console.log("Errored"));
+client.on('error', (error) => console.log(error));
 
 client.on("message", function(message) {
 	//Help message
