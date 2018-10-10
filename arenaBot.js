@@ -157,24 +157,6 @@ client.on("message", function(message) {
 		//Send a random video from the array
 		message.channel.send(bliniVideos[Math.floor(Math.random()*bliniVideos.length)]);
 	}
-
-	//Casts command, casts a spell. Takes no less than 2 parameters
-	else if(message.content.toLowerCase().startsWith("!cast")){
-		message.channel.send("This command currently under construction!");
-		/*
-		//Split message into an array of separate words, then check parameters
-		let splitMessage = message.content.trim().split(" ");
-		//Remove whitespace elements
-		splitMessage = splitMessage.filter(function(str){
-			return /\S/.test(str);
-		})
-		if(splitMessage.length <= 2){
-			message.channel.send("This command requires at least 2 parameters: The school of magic, followed by the name of the spell.\nThe school must be one word, but the name can be many.");
-			return;
-		}
-		spellFunc.cast(splitMessage, message.channel, message.member.displayName);
-		*/
-	}
 });
 
 client.login(auth.token);
