@@ -44,6 +44,7 @@ function compileMessage(starter = ""){
 		else{
 			constructedMessage += (" " + lastWord);
 		}
+		count++;
 	}
 
 	return constructedMessage;
