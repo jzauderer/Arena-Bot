@@ -20,7 +20,7 @@ client.on("message", function(message) {
 	}
 
 	else if (message.content.startsWith("!phrase")){
-		phraseFunc.printPhrase();
+		phraseFunc.printPhrase(message.channel);
 	}
 
 	//Duel command

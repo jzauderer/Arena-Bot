@@ -1,16 +1,17 @@
 const Discord = require("discord.js");
 const fs = require('fs');
+const async = require("async");
 
 module.exports ={
 	//The main function that will be called. Form a pseudo-random phrase from the collection in the txt file
-	printPhrase: async function (){
-		//addWord("key", "following");
-	}
+	printPhrase: async function (channel){
+		channel.send(parseDictionary());
+	},
 
 	catalogMessage: async function (message){
 		let splitMessage = message.split(" ");
 		for(let i = 0; i < splitMessage.length - 1; i++){
-			addWord(splitMessage[i], splitMessage[i+1]);
+			await addWord(splitMessage[i], splitMessage[i+1]);
 		}
 	}
 }
@@ -34,7 +35,6 @@ function parseDictionary(){
 
 	//Split file into lines, put into an array called rawText
 	let rawText = fs.readFileSync("dictionary.txt", "utf8").split(/\r?\n/);
-
 	//Split each line into words, push each line to an array called dictionary
 	for(let i = 0; i < rawText.length; i++){
 		dictionary.push(rawText[i].toString().split(" "));
@@ -43,14 +43,15 @@ function parseDictionary(){
 	return dictionary;
 }
 
-async function writeDictionary(newDictionary){
+function writeDictionary(newDictionary){
 	let rawText = "";
+
 	//Iterate through each 'line' array in the new dictionary array
-	newDictionary.forEach(async (line) =>{
+	newDictionary.forEach(function(line){
 		//Add each 'word' from each 'line' array to the raw text
-		line.forEach(async (word) =>{
+		line.forEach(function(word){
 			rawText += (word + " ");
-		})
+		});
 
 		//Remove leading space
 		rawText = rawText.substring(0, rawText.length - 1);
@@ -63,7 +64,7 @@ async function writeDictionary(newDictionary){
 	rawText = rawText.substring(0, rawText.length - 1);
 
 	//Write to file
-	await fs.writeFile('dictionary.txt', rawText, (error)=>{
+	fs.writeFileSync('dictionary.txt', rawText, (error)=>{
 		if(error)
 			throw error;
 	});
@@ -77,11 +78,11 @@ async function addWord(keyWord, followingWord){
 		if(dictionary[i][0] === keyWord){
 			//Then push the new following word to the line (array)
 			dictionary[i].push(followingWord);
-			await writeDictionary(dictionary);
+			writeDictionary(dictionary);
 			return;
 		}
 	}
 	//If the key is not found, create a new line with that keyword and following
 	dictionary.push([keyWord, followingWord]);
-	await writeDictionary(dictionary);
+	writeDictionary(dictionary);
 }
