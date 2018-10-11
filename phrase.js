@@ -17,10 +17,17 @@ module.exports ={
 }
 
 function compileMessage(starter = ""){
-	let maxSize = 25
-	let count = 0;
+	let count = 1;
 	let dictionary = parseDictionary();
 	let constructedMessage;
+
+	//Percent chance to stop printing
+	let keepGoing = true;
+	let stopPercentage = 8;
+
+	//Max message size
+	let maxSize = 25;
+
 	//User can opt to provide the starting word
 
 	if(starter === ""){
@@ -34,7 +41,9 @@ function compileMessage(starter = ""){
 	//Also keep track of the most recent word that has been added
 	let lastWord = constructedMessage;
 
-	while(count < maxSize){
+	while((count < maxSize && keepGoing) || constructedMessage === ""){
+		if(Math.floor(Math.random() * 100) < stopPercentage)
+			keepGoing = false;
 		lastWord = next(lastWord);
 		//End message creation if the last word has no followers
 		if(lastWord === ""){
