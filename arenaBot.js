@@ -1,7 +1,7 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
 const duelFunc = require("./duel");
-const spellFunc = require("./spells");
+const phraseFunc = require("./phrase");
 const record = require("./records");
 const fs = require('fs');
 const auth = require('./auth.json');
@@ -17,6 +17,10 @@ client.on("message", function(message) {
 	//Help message
 	if(message.content.trim().toLowerCase() === "!arenahelp"){
 		message.channel.send("Arena-Bot has 4 commands so far:\n**!duel [user]**: Challenges tagged user to a duel\n**!record**: Posts your win/loss record in the duel minigame\n**!blini [optional number]**: Posts a random blini. If given a number, will print the corresponding blini.\n**!blinivideo**: Posts a random blini video")
+	}
+
+	else if (message.content.startsWith("!phrase")){
+		phraseFunc.printPhrase();
 	}
 
 	//Duel command
@@ -65,6 +69,10 @@ client.on("message", function(message) {
 	//Print duel Power Rankings for the given server
 	else if(message.content.trim().toLowerCase() === "!pr"){
 		record.printPR(message.channel, message.channel.guild);
+	}
+
+	else if(message.content.toLowerCase().trim() === "!phrase"){
+		phraseFunc.printPhrase();
 	}
 
 	//blini command, post random image of blini
