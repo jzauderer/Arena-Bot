@@ -166,7 +166,7 @@ client.on("message", function(message) {
 		message.channel.send(bliniVideos[Math.floor(Math.random()*bliniVideos.length)]);
 	}
 
-	else if(message.content.trim().split(" ").length > 1){
+	else if(message.content.trim().split(" ").length > 1 && !message.member.user.bot){
 		phraseFunc.catalogMessage(message.content);
 	}
 });
