@@ -4,7 +4,14 @@ const fs = require('fs');
 module.exports ={
 	//The main function that will be called. Form a pseudo-random phrase from the collection in the txt file
 	printPhrase: async function (){
-		parseDictionary();
+		//addWord("key", "following");
+	}
+
+	catalogMessage: async function (message){
+		let splitMessage = message.split(" ");
+		for(let i = 0; i < splitMessage.length - 1; i++){
+			addWord(splitMessage[i], splitMessage[i+1]);
+		}
 	}
 }
 
@@ -22,23 +29,59 @@ key word word word
 This will return an array as such:
 [ [key, word], [key, word, word, word], [key, word, word], [key, word, word, word] ]
 */
-async function parseDictionary(){
+function parseDictionary(){
 	let dictionary = [];
-	let rawText = [];
-	await fs.readFile("dictionary.txt", "utf8", function(err, data) {
-		if(err)
-			throw err;
 
-		//Split file into lines, put into an array called rawText
-		rawText = data.split(/\r?\n/);
+	//Split file into lines, put into an array called rawText
+	let rawText = fs.readFileSync("dictionary.txt", "utf8").split(/\r?\n/);
 
-		//Split each line into words, push each line to an array called dictionary
-		for(let i = 0; i < rawText.length; i++){
-			dictionary.push(rawText[i].toString().split(" "));
-		}
+	//Split each line into words, push each line to an array called dictionary
+	for(let i = 0; i < rawText.length; i++){
+		dictionary.push(rawText[i].toString().split(" "));
+	}
 
-		console.log(dictionary);
-		return dictionary;
+	return dictionary;
+}
+
+async function writeDictionary(newDictionary){
+	let rawText = "";
+	//Iterate through each 'line' array in the new dictionary array
+	newDictionary.forEach(async (line) =>{
+		//Add each 'word' from each 'line' array to the raw text
+		line.forEach(async (word) =>{
+			rawText += (word + " ");
+		})
+
+		//Remove leading space
+		rawText = rawText.substring(0, rawText.length - 1);
+
+		//Line break between 'line' arrays
+		rawText += "\r\n";
 	});
-	
+
+	//Remove last line break
+	rawText = rawText.substring(0, rawText.length - 1);
+
+	//Write to file
+	await fs.writeFile('dictionary.txt', rawText, (error)=>{
+		if(error)
+			throw error;
+	});
+}
+
+async function addWord(keyWord, followingWord){
+	let dictionary = parseDictionary();
+
+	//Find line in which the first word is the word you're adding
+	for(let i = 0; i < dictionary.length; i++){
+		if(dictionary[i][0] === keyWord){
+			//Then push the new following word to the line (array)
+			dictionary[i].push(followingWord);
+			await writeDictionary(dictionary);
+			return;
+		}
+	}
+	//If the key is not found, create a new line with that keyword and following
+	dictionary.push([keyWord, followingWord]);
+	await writeDictionary(dictionary);
 }

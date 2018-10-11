@@ -165,6 +165,10 @@ client.on("message", function(message) {
 		//Send a random video from the array
 		message.channel.send(bliniVideos[Math.floor(Math.random()*bliniVideos.length)]);
 	}
+
+	else if(message.content.trim().split(" ").length > 1){
+		phraseFunc.catalogMessage(message.content);
+	}
 });
 
 client.login(auth.token);
