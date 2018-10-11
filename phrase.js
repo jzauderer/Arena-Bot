@@ -4,8 +4,8 @@ const async = require("async");
 
 module.exports ={
 	//The main function that will be called. Form a pseudo-random phrase from the collection in the txt file
-	printPhrase: function (channel){
-		channel.send(compileMessage());
+	printPhrase: function (channel, starter = ""){
+		channel.send(compileMessage(starter));
 	},
 
 	catalogMessage: async function (message){
@@ -16,14 +16,20 @@ module.exports ={
 	}
 }
 
-function compileMessage(){
+function compileMessage(starter = ""){
 	let maxSize = 25
 	let count = 0;
 	let dictionary = parseDictionary();
-	let constructedMessage = "";
+	let constructedMessage;
+	//User can opt to provide the starting word
 
-	//Choose a random word to start on
-	constructedMessage = dictionary[Math.floor(Math.random()*dictionary.length)][0];
+	if(starter === ""){
+		//Choose a random word to start on
+		constructedMessage = dictionary[Math.floor(Math.random()*dictionary.length)][0];
+	}
+	else{
+		constructedMessage = starter;
+	}
 
 	//Also keep track of the most recent word that has been added
 	let lastWord = constructedMessage;
@@ -47,11 +53,14 @@ function compileMessage(){
 function next(keyWord){
 	let dictionary = parseDictionary();
 
+	if(keyWord === ""){
+		return "";
+	}
 	//Find line for your keyword
 	for(let i = 0; i < dictionary.length; i++){
-		if(dictionary[i][0] === keyWord){
+		if(dictionary[i][0] === keyWord && dictionary[i].length > 1){
 			//Choose a random word from this line
-			return dictionary[i][(Math.floor(Math.random()*(dictionary[i].length - 1)) + 1)].trim();
+			return dictionary[i][((Math.floor(Math.random()*(dictionary[i].length - 1))) + 1)].trim();
 		}
 	}
 	//If there is no entry for the keyword, end it there

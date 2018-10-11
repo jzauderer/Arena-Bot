@@ -20,7 +20,12 @@ client.on("message", function(message) {
 	}
 
 	else if (message.content.startsWith("!phrase")){
-		phraseFunc.printPhrase(message.channel);
+		if(message.content.trim().split(" ").length > 1){
+			phraseFunc.printPhrase(message.channel, message.content.trim().split(" ")[1]);
+		}
+		else{
+			phraseFunc.printPhrase(message.channel);
+		}
 	}
 
 	//Duel command
@@ -69,10 +74,6 @@ client.on("message", function(message) {
 	//Print duel Power Rankings for the given server
 	else if(message.content.trim().toLowerCase() === "!pr"){
 		record.printPR(message.channel, message.channel.guild);
-	}
-
-	else if(message.content.toLowerCase().trim() === "!phrase"){
-		phraseFunc.printPhrase();
 	}
 
 	//blini command, post random image of blini
