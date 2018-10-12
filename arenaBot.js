@@ -99,7 +99,7 @@ client.on("message", function(message) {
 			//Split message into an array of separate words, then check parameters
 			let splitMessage = message.content.toLowerCase().trim().split(" ");
 			//Check if only 1 arg
-			if(splitMessage.length === 2){
+			if(splitMessage.length > 1){
 				//Check if the second arg is a number
 				if(!isNaN(splitMessage[1])){
 					//Check if the number is valid
@@ -167,8 +167,13 @@ client.on("message", function(message) {
 		message.channel.send(bliniVideos[Math.floor(Math.random()*bliniVideos.length)]);
 	}
 
-	else if(message.content.trim().split(" ").length > 1 && !message.member.user.bot){
-		phraseFunc.catalogMessage(message.content);
+	else if(message.content.trim().split(" ").length > 1){
+		try{
+			if(!message.member.user.bot)
+				phraseFunc.catalogMessage(message.content);
+		} catch (err){
+			console.log("TypeError: Cannot read property 'user' of null");
+		}
 	}
 });
 

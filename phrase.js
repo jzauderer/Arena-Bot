@@ -4,7 +4,7 @@ const async = require("async");
 
 module.exports ={
 	//The main function that will be called. Form a pseudo-random phrase from the collection in the txt file
-	printPhrase: function (channel, starter = ""){
+	printPhrase: async function (channel, starter = ""){
 		channel.send(compileMessage(starter));
 	},
 
