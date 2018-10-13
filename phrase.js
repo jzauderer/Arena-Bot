@@ -2,6 +2,14 @@ const Discord = require("discord.js");
 const fs = require('fs');
 const async = require("async");
 
+//Frequency at which the dictionary is updated
+//It will update the dictionary once ever x messages
+const frequency = 10;
+
+let messagesLogged = 0;
+
+let dictionary = parseDictionary();
+
 module.exports ={
 	//The main function that will be called. Form a pseudo-random phrase from the collection in the txt file
 	printPhrase: async function (channel, starter = ""){
@@ -18,7 +26,6 @@ module.exports ={
 
 function compileMessage(starter = ""){
 	let count = 1;
-	let dictionary = parseDictionary();
 	let constructedMessage;
 
 	//Percent chance to stop printing
@@ -61,8 +68,6 @@ function compileMessage(starter = ""){
 
 //Given a keyword, choose a pseudo-random word to follow it
 function next(keyWord){
-	let dictionary = parseDictionary();
-
 	if(keyWord === ""){
 		return "";
 	}
@@ -107,6 +112,9 @@ function parseDictionary(){
 function writeDictionary(newDictionary){
 	let rawText = "";
 
+	//Reset the counter on writing frequency;
+	messagesLogged = 0;
+
 	//Iterate through each 'line' array in the new dictionary array
 	newDictionary.forEach(function(line){
 		//Add each 'word' from each 'line' array to the raw text
@@ -132,18 +140,19 @@ function writeDictionary(newDictionary){
 }
 
 async function addWord(keyWord, followingWord){
-	let dictionary = parseDictionary();
-
+	messagesLogged++;
 	//Find line in which the first word is the word you're adding
 	for(let i = 0; i < dictionary.length; i++){
 		if(dictionary[i][0] === keyWord){
 			//Then push the new following word to the line (array)
 			dictionary[i].push(followingWord);
-			writeDictionary(dictionary);
+			if(messagesLogged >= frequency)
+				writeDictionary(dictionary);
 			return;
 		}
 	}
 	//If the key is not found, create a new line with that keyword and following
 	dictionary.push([keyWord, followingWord]);
-	writeDictionary(dictionary);
+	if(messagesLogged >= frequency)
+		writeDictionary(dictionary);
 }
