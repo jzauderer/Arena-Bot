@@ -167,10 +167,9 @@ client.on("message", function(message) {
 		message.channel.send(bliniVideos[Math.floor(Math.random()*bliniVideos.length)]);
 	}
 
-	else if(message.content.trim().split(" ").length > 1){
+	else if(message.content.trim().split(" ").length > 1 && !message.guild.member(message.author).user.bot){
 		try{
-			if(!message.member.user.bot)
-				phraseFunc.catalogMessage(message.content);
+			phraseFunc.catalogMessage(message.content);
 		} catch (err){
 			console.log("TypeError: Cannot read property 'user' of null");
 		}

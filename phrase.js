@@ -10,17 +10,33 @@ let messagesLogged = 0;
 
 let dictionary = parseDictionary();
 
+//The frequency at which the dictionary file is overwritten to the new dictionary
+//ie Every rewriteFrequency messages parsed, the file will be overwritten
+let rewriteFrequency = 1000;
+
+//Dictionary will be rewritten when this reaches rewriteFrequency
+let rewriteCount = 0;
+
 module.exports ={
 	//The main function that will be called. Form a pseudo-random phrase from the collection in the txt file
 	printPhrase: async function (channel, starter = ""){
+		//console.log("Printing phrase");
 		channel.send(compileMessage(starter));
 	},
 
 	catalogMessage: async function (message){
-		let splitMessage = message.split(" ");
-		for(let i = 0; i < splitMessage.length - 1; i++){
-			await addWord(splitMessage[i], splitMessage[i+1]);
+		messagesLogged++;
+		if(messagesLogged >= frequency){
+			//console.log("Parsing message: " + message);
+			rewriteCount++;
+			let splitMessage = message.split(" ");
+			for(let i = 0; i < splitMessage.length - 1; i++){
+				await addWord(splitMessage[i], splitMessage[i+1]);
+			}
+			messagesLogged = 0;
+			//console.log("Message parsed: " + message);
 		}
+		
 	}
 }
 
@@ -98,22 +114,26 @@ This will return an array as such:
 */
 function parseDictionary(){
 	let dictionary = [];
-
+	//console.log("Parsing Dictionary");
 	//Split file into lines, put into an array called rawText
 	let rawText = fs.readFileSync("dictionary.txt", "utf8").split(/\r?\n/);
 	//Split each line into words, push each line to an array called dictionary
 	for(let i = 0; i < rawText.length; i++){
 		dictionary.push(rawText[i].toString().split(" "));
 	}
+	//console.log("Dictionary Parsed");
 
 	return dictionary;
 }
 
+//Overwrites the dictionary file
 function writeDictionary(newDictionary){
+	if(rewriteCount < rewriteFrequency){
+		return;
+	}
+	rewriteCount = 0;
+	console.log("Rewriting dictionary");
 	let rawText = "";
-
-	//Reset the counter on writing frequency;
-	messagesLogged = 0;
 
 	//Iterate through each 'line' array in the new dictionary array
 	newDictionary.forEach(function(line){
@@ -139,20 +159,19 @@ function writeDictionary(newDictionary){
 	});
 }
 
+//Pushes an individual word/following pair to the stored dictionary
 async function addWord(keyWord, followingWord){
-	messagesLogged++;
+	//console.log("Writing word: " + keyWord);
 	//Find line in which the first word is the word you're adding
 	for(let i = 0; i < dictionary.length; i++){
 		if(dictionary[i][0] === keyWord){
 			//Then push the new following word to the line (array)
 			dictionary[i].push(followingWord);
-			if(messagesLogged >= frequency)
-				writeDictionary(dictionary);
-			return;
+			writeDictionary(dictionary);
 		}
 	}
 	//If the key is not found, create a new line with that keyword and following
 	dictionary.push([keyWord, followingWord]);
-	if(messagesLogged >= frequency)
-		writeDictionary(dictionary);
+	writeDictionary(dictionary);
+	//console.log("Word written: " + keyWord);
 }
