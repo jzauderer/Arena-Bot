@@ -12,7 +12,7 @@ let dictionary = parseDictionary();
 
 //The frequency at which the dictionary file is overwritten to the new dictionary
 //ie Every rewriteFrequency messages parsed, the file will be overwritten
-let rewriteFrequency = 1000;
+let rewriteFrequency = 100;
 
 //Dictionary will be rewritten when this reaches rewriteFrequency
 let rewriteCount = 0;
