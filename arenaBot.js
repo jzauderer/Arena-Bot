@@ -16,7 +16,7 @@ client.on('error', (error) => console.log(error));
 client.on("message", function(message) {
 	//Help message
 	if(message.content.trim().toLowerCase() === "!arenahelp"){
-		message.channel.send("Arena-Bot has 4 commands so far:\n**!duel [user]**: Challenges tagged user to a duel\n**!record**: Posts your win/loss record in the duel minigame\n**!blini [optional number]**: Posts a random blini. If given a number, will print the corresponding blini.\n**!blinivideo**: Posts a random blini video")
+		message.channel.send("Arena-Bot has 5 commands so far:\n**!duel [user]**: Challenges tagged user to a duel\n**!record**: Posts your win/loss record in the duel minigame\n**!phrase [optional word]**: Sends a randomly generated phrase based on what this bot has heard. If given a word, will start the phrase from there\n**!blini [optional number]**: Posts a random blini. If given a number, will print the corresponding blini.\n**!blinivideo**: Posts a random blini video")
 	}
 
 	else if (message.content.startsWith("!phrase")){
