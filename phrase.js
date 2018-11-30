@@ -4,7 +4,7 @@ const async = require("async");
 
 //Frequency at which the dictionary is updated
 //It will update the dictionary once ever x messages
-const frequency = 10;
+const frequency = 1;
 
 let messagesLogged = 0;
 
@@ -12,7 +12,7 @@ let dictionary = parseDictionary();
 
 //The frequency at which the dictionary file is overwritten to the new dictionary
 //ie Every rewriteFrequency messages parsed, the file will be overwritten
-let rewriteFrequency = 100;
+let rewriteFrequency = 500;
 
 //Dictionary will be rewritten when this reaches rewriteFrequency
 let rewriteCount = 0;
@@ -20,11 +20,11 @@ let rewriteCount = 0;
 module.exports ={
 	//The main function that will be called. Form a pseudo-random phrase from the collection in the txt file
 	printPhrase: async function (channel, starter = ""){
-		//console.log("Printing phrase");
-		channel.send(compileMessage(starter));
+		channel.send(compileMessage(starter.trim()));
 	},
 
 	catalogMessage: async function (message){
+		message= message.trim().
 		messagesLogged++;
 		if(messagesLogged >= frequency){
 			//console.log("Parsing message: " + message);
@@ -32,6 +32,10 @@ module.exports ={
 			let splitMessage = message.split(" ");
 			for(let i = 0; i < splitMessage.length - 1; i++){
 				await addWord(splitMessage[i], splitMessage[i+1]);
+			}
+			if(rewriteCount  >= rewriteFrequency){
+				writeDictionary(dictionary);
+				rewriteCount = 0;
 			}
 			messagesLogged = 0;
 			//console.log("Message parsed: " + message);
@@ -56,6 +60,8 @@ function compileMessage(starter = ""){
 	if(starter === ""){
 		//Choose a random word to start on
 		constructedMessage = dictionary[Math.floor(Math.random()*dictionary.length)][0];
+		while(constructedMessage === "")
+			constructedMessage = dictionary[Math.floor(Math.random()*dictionary.length)][0];
 	}
 	else{
 		constructedMessage = starter;
@@ -114,24 +120,19 @@ This will return an array as such:
 */
 function parseDictionary(){
 	let dictionary = [];
-	//console.log("Parsing Dictionary");
+
 	//Split file into lines, put into an array called rawText
 	let rawText = fs.readFileSync("dictionary.txt", "utf8").split(/\r?\n/);
 	//Split each line into words, push each line to an array called dictionary
 	for(let i = 0; i < rawText.length; i++){
 		dictionary.push(rawText[i].toString().split(" "));
 	}
-	//console.log("Dictionary Parsed");
 
 	return dictionary;
 }
 
 //Overwrites the dictionary file
 function writeDictionary(newDictionary){
-	if(rewriteCount < rewriteFrequency){
-		return;
-	}
-	rewriteCount = 0;
 	console.log("Rewriting dictionary");
 	let rawText = "";
 
@@ -167,11 +168,8 @@ async function addWord(keyWord, followingWord){
 		if(dictionary[i][0] === keyWord){
 			//Then push the new following word to the line (array)
 			dictionary[i].push(followingWord);
-			writeDictionary(dictionary);
 		}
 	}
 	//If the key is not found, create a new line with that keyword and following
 	dictionary.push([keyWord, followingWord]);
-	writeDictionary(dictionary);
-	//console.log("Word written: " + keyWord);
 }

@@ -16,7 +16,7 @@ client.on('error', (error) => console.log(error));
 client.on("message", function(message) {
 	//Help message
 	if(message.content.trim().toLowerCase() === "!arenahelp"){
-		message.channel.send("Arena-Bot has 5 commands so far:\n**!duel [user]**: Challenges tagged user to a duel\n**!record**: Posts your win/loss record in the duel minigame\n**!phrase [optional word]**: Sends a randomly generated phrase based on what this bot has heard. If given a word, will start the phrase from there\n**!blini [optional number]**: Posts a random blini. If given a number, will print the corresponding blini.\n**!blinivideo**: Posts a random blini video")
+		message.channel.send("Arena-Bot has 6 commands so far:\n**!duel [user]**: Challenges tagged user to a duel\n**!record**: Posts your win/loss record in the duel minigame\n**!pr**: Posts a 'power ranking' of the users with the top records for the dueling minigame in this server\n**!phrase [optional word]**: Sends a randomly generated phrase based on what this bot has heard. If given a word, will start the phrase from there\n**!blini [optional number]**: Posts a random blini. If given a number, will print the corresponding blini.\n**!blinivideo**: Posts a random blini video")
 	}
 
 	else if (message.content.startsWith("!phrase")){
@@ -167,9 +167,10 @@ client.on("message", function(message) {
 		message.channel.send(bliniVideos[Math.floor(Math.random()*bliniVideos.length)]);
 	}
 
-	else if(message.content.trim().split(" ").length > 1 && message.guild.member(message.author) !== null){
-		if(!message.guild.member(message.author).user.bot)
-			phraseFunc.catalogMessage(message.content);
+	else if(message.content.trim().split(" ").length > 1 && message.guild !== null){
+		if(message.guild.member(message.author) !== null)
+			if(!message.guild.member(message.author).user.bot)
+				phraseFunc.catalogMessage(message.content);
 	}
 });
 
