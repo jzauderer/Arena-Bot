@@ -9,7 +9,43 @@ const auth = require('./auth.json');
 client.on("ready", () => {
   console.log("Reactor Online, Sensors Online, Weapons Online, All Systems Nominal");
   client.user.setActivity('!arenahelp');
+
+  //Set initial timers for gb alerts
+  let currentDate = new Date();
+  let GB = new Date(); //First gb is at 1pm, so we set alarm to 12:58:00
+  GB.setHours(12);
+  GB.setMinutes(58);
+  GB.setSeconds(0);
+
+  //Get the time between time of start-up and first GB
+  let timeDiff = Math.abs(currentDate.getTime() - GB.getTime());
+
+  //Set first alarm
+  client.setTimeout(setDailyAlarm, timeDiff);
+
+  //Set 2nd alarm 5 hours later
+  timeDiff = (3600000 * 5)
+  client.setTimeout(setDailyAlarm, timeDiff);
+
+  //Set 3rd alarm 3 hours later
+  timeDiff = (3600000 * 3)
+  client.setTimeout(setDailyAlarm, timeDiff);
 });
+
+//Sets daily alarms for GB for the first time on running
+function setDailyAlarm(){
+	//Set a daily gb alarm at the current time
+	client.setInterval(gbAlarm, 86400000);
+	gbAlarm();
+}
+
+//Daily alarm
+function gbAlarm(){
+	//Find gb-alert channel
+	const channel = client.channels.find(ch => ch.name === 'gb-alerts')
+	if(!channel) return;
+	channel.send("@everyone Guild battle soon!");
+}
 
 client.on('error', (error) => console.log(error));
 
@@ -167,11 +203,13 @@ client.on("message", function(message) {
 		message.channel.send(bliniVideos[Math.floor(Math.random()*bliniVideos.length)]);
 	}
 
-	else if(message.content.trim().split(" ").length > 1 && message.guild !== null){
+	/*else if(message.content.trim().split(" ").length > 1 && message.guild !== null){
 		if(message.guild.member(message.author) !== null)
 			if(!message.guild.member(message.author).user.bot)
 				phraseFunc.catalogMessage(message.content);
-	}
+	}*/
+
+
 });
 
 client.login(auth.token);
