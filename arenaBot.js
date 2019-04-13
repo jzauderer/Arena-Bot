@@ -189,12 +189,12 @@ function setAlarms(){
 	firstGB.setSeconds(0);
 
 	let secondGB = new Date(); //Second at 6pm
-	secondGB.setHours(5);
+	secondGB.setHours(17);
 	secondGB.setMinutes(58);
 	secondGB.setSeconds(0);
 
 	let thirdGB = new Date(); //Third at 9pm
-	thirdGB.setHours(8);
+	thirdGB.setHours(20);
 	thirdGB.setMinutes(58);
 	thirdGB.setSeconds(0);
 
